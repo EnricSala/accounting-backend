@@ -1,2 +1,4 @@
-# accounting-backend
-Backend for an Accounting application
+Accounting Backend
+==================
+
+Backend for an Accounting application.
