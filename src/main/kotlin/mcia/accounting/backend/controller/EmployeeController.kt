@@ -31,7 +31,7 @@ class EmployeeController(private val employeeRepository: EmployeeRepository) {
         return employeeRepository.save(employee)
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     fun update(@RequestBody employee: Employee): Employee {
         log.info("PUT $PATH $employee")
         if (!employeeRepository.existsById(employee.id))

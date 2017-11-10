@@ -31,7 +31,7 @@ class PurchaseStateController(private val purchaseStateRepository: PurchaseState
         return purchaseStateRepository.save(purchaseState)
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     fun update(@RequestBody purchaseState: PurchaseState): PurchaseState {
         log.info("PUT $PATH $purchaseState")
         if (!purchaseStateRepository.existsById(purchaseState.id))

@@ -31,7 +31,7 @@ class ProjectTypeController(private val projectTypeRepository: ProjectTypeReposi
         return projectTypeRepository.save(projectType)
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     fun update(@RequestBody projectType: ProjectType): ProjectType {
         log.info("PUT $PATH $projectType")
         if (!projectTypeRepository.existsById(projectType.id))

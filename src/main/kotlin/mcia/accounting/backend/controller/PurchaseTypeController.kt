@@ -31,7 +31,7 @@ class PurchaseTypeController(private val purchaseTypeRepository: PurchaseTypeRep
         return purchaseTypeRepository.save(purchaseType)
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     fun update(@RequestBody purchaseType: PurchaseType): PurchaseType {
         log.info("PUT $PATH $purchaseType")
         if (!purchaseTypeRepository.existsById(purchaseType.id))

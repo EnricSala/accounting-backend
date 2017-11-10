@@ -31,7 +31,7 @@ class ClientTypeController(private val clientTypeRepository: ClientTypeRepositor
         return clientTypeRepository.save(clientType)
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     fun update(@RequestBody clientType: ClientType): ClientType {
         log.info("PUT $PATH $clientType")
         if (!clientTypeRepository.existsById(clientType.id))

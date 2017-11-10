@@ -31,7 +31,7 @@ class SupplierController(private val supplierRepository: SupplierRepository) {
         return supplierRepository.save(supplier)
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     fun update(@RequestBody supplier: Supplier): Supplier {
         log.info("PUT $PATH $supplier")
         if (!supplierRepository.existsById(supplier.id))

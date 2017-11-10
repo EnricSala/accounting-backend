@@ -39,7 +39,7 @@ class PurchaseController(private val purchaseService: PurchaseService) {
         return purchaseService.create(request)
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     fun update(@RequestBody request: PurchaseRequest): Purchase {
         log.debug("PUT {} {}", PATH, request)
         return purchaseService.update(request)

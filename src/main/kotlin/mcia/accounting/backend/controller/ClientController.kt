@@ -29,7 +29,7 @@ class ClientController(private val clientService: ClientService) {
         return clientService.create(request)
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     fun update(@RequestBody request: ClientRequest): Client {
         log.debug("PUT {} {}", PATH, request)
         return clientService.update(request)
