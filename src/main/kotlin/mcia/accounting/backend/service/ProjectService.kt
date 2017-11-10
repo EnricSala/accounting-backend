@@ -26,19 +26,19 @@ class ProjectService(private val projectRepository: ProjectRepository,
             .orElseThrow { RuntimeException("project id not found") }
 
     @Transactional
-    fun create(request: ProjectRequest): Project {
-        if (request.id < 0)
-            throw RuntimeException("id must not be set on create")
-        return projectRepository.save(toProject(request))
-                .also { log.info("Created {}", it) }
+    fun create(request: ProjectRequest): Project = when {
+        request.id < 0 ->
+            projectRepository.save(toProject(request))
+                    .also { log.info("Created {}", it) }
+        else -> throw RuntimeException("id must not be set on create")
     }
 
     @Transactional
-    fun update(request: ProjectRequest): Project {
-        if (!projectRepository.existsById(request.id))
-            throw RuntimeException("project id not found")
-        return projectRepository.save(toProject(request))
-                .also { log.info("Updated {}", it) }
+    fun update(request: ProjectRequest): Project = when {
+        projectRepository.existsById(request.id) ->
+            projectRepository.save(toProject(request))
+                    .also { log.info("Updated {}", it) }
+        else -> throw RuntimeException("project id not found")
     }
 
     @Transactional

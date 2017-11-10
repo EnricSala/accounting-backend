@@ -28,19 +28,19 @@ class PurchaseService(private val purchaseRepository: PurchaseRepository,
             .orElseThrow { RuntimeException("purchase id not found") }
 
     @Transactional
-    fun create(request: PurchaseRequest): Purchase {
-        if (request.id < 0)
-            throw RuntimeException("id must not be set on create")
-        return purchaseRepository.save(toPurchase(request))
-                .also { log.info("Created {}", it) }
+    fun create(request: PurchaseRequest): Purchase = when {
+        request.id < 0 ->
+            purchaseRepository.save(toPurchase(request))
+                    .also { log.info("Created {}", it) }
+        else -> throw RuntimeException("id must not be set on create")
     }
 
     @Transactional
-    fun update(request: PurchaseRequest): Purchase {
-        if (!purchaseRepository.existsById(request.id))
-            throw RuntimeException("purchase id not found")
-        return purchaseRepository.save(toPurchase(request))
-                .also { log.info("Updated {}", it) }
+    fun update(request: PurchaseRequest): Purchase = when {
+        purchaseRepository.existsById(request.id) ->
+            purchaseRepository.save(toPurchase(request))
+                    .also { log.info("Updated {}", it) }
+        else -> throw RuntimeException("purchase id not found")
     }
 
     @Transactional
