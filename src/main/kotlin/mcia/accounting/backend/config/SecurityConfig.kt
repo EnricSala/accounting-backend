@@ -1,6 +1,5 @@
 package mcia.accounting.backend.config
 
-import org.springframework.boot.actuate.autoconfigure.security.EndpointRequest
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -18,10 +17,8 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity) {
         http.authorizeRequests()
-                .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
-        //      .requestMatchers(StaticResourceRequest.toCommonLocations()).permitAll()
-        //      .requestMatchers(EndpointRequest.to("status", "info")).permitAll()
-        //      .requestMatchers(EndpointRequest.toAnyEndpoint()).hasRole("USER")
+                .anyRequest().permitAll()
+                .and().csrf().disable()
     }
 
 }
