@@ -10,6 +10,6 @@ data class Employee(
 
         @Column var fullname: String,
 
-        @Column var email: String = "",
+        @Column var email: String,
 
-        @Column var comments: String = "")
+        @Column var comments: String)

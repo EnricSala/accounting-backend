@@ -16,11 +16,11 @@ data class Purchase(
 
         @Column var amount: BigDecimal,
 
-        @Column var comments: String = "",
+        @Column var comments: String,
 
         @Column var requestDate: Date,
 
-        @Column var invoiceFile: String? = null,
+        @Column var invoiceFile: String?,
 
         @ManyToOne var requestingEmployee: Employee,
 
