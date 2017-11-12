@@ -27,16 +27,18 @@ class ProjectTypeController(private val projectTypeRepository: ProjectTypeReposi
     fun create(@RequestBody projectType: ProjectType): ProjectType {
         log.info("POST $PATH $projectType")
         if (projectType.id < 0)
+            return projectTypeRepository.save(projectType)
+        else
             throw RuntimeException("insert cannot set the id")
-        return projectTypeRepository.save(projectType)
     }
 
     @PutMapping
     fun update(@RequestBody projectType: ProjectType): ProjectType {
         log.info("PUT $PATH $projectType")
-        if (!projectTypeRepository.existsById(projectType.id))
+        if (projectTypeRepository.existsById(projectType.id))
+            return projectTypeRepository.save(projectType)
+        else
             throw RuntimeException("id not found")
-        return projectTypeRepository.save(projectType)
     }
 
     @DeleteMapping("/{id}")

@@ -27,16 +27,18 @@ class PurchaseTypeController(private val purchaseTypeRepository: PurchaseTypeRep
     fun create(@RequestBody purchaseType: PurchaseType): PurchaseType {
         log.info("POST $PATH $purchaseType")
         if (purchaseType.id < 0)
+            return purchaseTypeRepository.save(purchaseType)
+        else
             throw RuntimeException("insert cannot set the id")
-        return purchaseTypeRepository.save(purchaseType)
     }
 
     @PutMapping
     fun update(@RequestBody purchaseType: PurchaseType): PurchaseType {
         log.info("PUT $PATH $purchaseType")
-        if (!purchaseTypeRepository.existsById(purchaseType.id))
+        if (purchaseTypeRepository.existsById(purchaseType.id))
+            return purchaseTypeRepository.save(purchaseType)
+        else
             throw RuntimeException("id not found")
-        return purchaseTypeRepository.save(purchaseType)
     }
 
     @DeleteMapping("/{id}")

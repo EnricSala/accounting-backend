@@ -27,16 +27,18 @@ class PurchaseStateController(private val purchaseStateRepository: PurchaseState
     fun create(@RequestBody purchaseState: PurchaseState): PurchaseState {
         log.info("POST $PATH $purchaseState")
         if (purchaseState.id < 0)
+            return purchaseStateRepository.save(purchaseState)
+        else
             throw RuntimeException("insert cannot set the id")
-        return purchaseStateRepository.save(purchaseState)
     }
 
     @PutMapping
     fun update(@RequestBody purchaseState: PurchaseState): PurchaseState {
         log.info("PUT $PATH $purchaseState")
-        if (!purchaseStateRepository.existsById(purchaseState.id))
+        if (purchaseStateRepository.existsById(purchaseState.id))
+            return purchaseStateRepository.save(purchaseState)
+        else
             throw RuntimeException("id not found")
-        return purchaseStateRepository.save(purchaseState)
     }
 
     @DeleteMapping("/{id}")

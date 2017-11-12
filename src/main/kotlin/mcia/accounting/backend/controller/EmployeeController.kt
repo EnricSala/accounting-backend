@@ -27,16 +27,18 @@ class EmployeeController(private val employeeRepository: EmployeeRepository) {
     fun create(@RequestBody employee: Employee): Employee {
         log.info("POST $PATH $employee")
         if (employee.id < 0)
+            return employeeRepository.save(employee)
+        else
             throw RuntimeException("insert cannot set the id")
-        return employeeRepository.save(employee)
     }
 
     @PutMapping
     fun update(@RequestBody employee: Employee): Employee {
         log.info("PUT $PATH $employee")
-        if (!employeeRepository.existsById(employee.id))
+        if (employeeRepository.existsById(employee.id))
+            return employeeRepository.save(employee)
+        else
             throw RuntimeException("id not found")
-        return employeeRepository.save(employee)
     }
 
     @DeleteMapping("/{id}")

@@ -27,16 +27,18 @@ class SupplierController(private val supplierRepository: SupplierRepository) {
     fun create(@RequestBody supplier: Supplier): Supplier {
         log.info("POST $PATH $supplier")
         if (supplier.id < 0)
+            return supplierRepository.save(supplier)
+        else
             throw RuntimeException("insert cannot set the id")
-        return supplierRepository.save(supplier)
     }
 
     @PutMapping
     fun update(@RequestBody supplier: Supplier): Supplier {
         log.info("PUT $PATH $supplier")
-        if (!supplierRepository.existsById(supplier.id))
+        if (supplierRepository.existsById(supplier.id))
+            return supplierRepository.save(supplier)
+        else
             throw RuntimeException("id not found")
-        return supplierRepository.save(supplier)
     }
 
     @DeleteMapping("/{id}")

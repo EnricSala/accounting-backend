@@ -27,16 +27,18 @@ class ClientTypeController(private val clientTypeRepository: ClientTypeRepositor
     fun create(@RequestBody clientType: ClientType): ClientType {
         log.info("POST $PATH $clientType")
         if (clientType.id < 0)
+            return clientTypeRepository.save(clientType)
+        else
             throw RuntimeException("insert cannot set the id")
-        return clientTypeRepository.save(clientType)
     }
 
     @PutMapping
     fun update(@RequestBody clientType: ClientType): ClientType {
         log.info("PUT $PATH $clientType")
-        if (!clientTypeRepository.existsById(clientType.id))
+        if (clientTypeRepository.existsById(clientType.id))
+            return clientTypeRepository.save(clientType)
+        else
             throw RuntimeException("id not found")
-        return clientTypeRepository.save(clientType)
     }
 
     @DeleteMapping("/{id}")
