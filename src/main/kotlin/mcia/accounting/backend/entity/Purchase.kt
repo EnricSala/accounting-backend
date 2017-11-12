@@ -8,7 +8,7 @@ import javax.persistence.*
 data class Purchase(
 
         @GeneratedValue(strategy = GenerationType.AUTO)
-        @Id val id: Long = -1,
+        @Id var id: Long = -1,
 
         @Column var item: String,
 

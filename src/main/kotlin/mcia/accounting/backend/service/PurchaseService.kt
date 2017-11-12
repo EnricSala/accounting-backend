@@ -28,17 +28,14 @@ class PurchaseService(private val purchaseRepository: PurchaseRepository,
             .orElseThrow { RuntimeException("purchase id not found") }
 
     @Transactional
-    fun create(request: PurchaseRequest): Purchase = when {
-        request.id < 0 ->
+    fun create(request: PurchaseRequest): Purchase =
             purchaseRepository.save(toPurchase(request))
                     .also { log.info("Created {}", it) }
-        else -> throw RuntimeException("id must not be set on create")
-    }
 
     @Transactional
-    fun update(request: PurchaseRequest): Purchase = when {
-        purchaseRepository.existsById(request.id) ->
-            purchaseRepository.save(toPurchase(request))
+    fun update(id: Long, request: PurchaseRequest): Purchase = when {
+        purchaseRepository.existsById(id) ->
+            purchaseRepository.save(toPurchase(request, id))
                     .also { log.info("Updated {}", it) }
         else -> throw RuntimeException("purchase id not found")
     }
@@ -47,7 +44,7 @@ class PurchaseService(private val purchaseRepository: PurchaseRepository,
     fun deleteById(id: Long) = purchaseRepository.deleteById(id)
             .also { log.info("Deleted Purchase(id={})", id) }
 
-    private fun toPurchase(request: PurchaseRequest): Purchase {
+    private fun toPurchase(request: PurchaseRequest, id: Long = -1): Purchase {
         val requestingEmployee = employeeRepository.findById(request.requestingEmployeeId)
                 .orElseThrow { IllegalArgumentException("employee id not found") }
         val requestingProject = projectRepository.findById(request.requestingProjectId)
@@ -60,9 +57,8 @@ class PurchaseService(private val purchaseRepository: PurchaseRepository,
                 .orElseThrow { IllegalArgumentException("purchase type id not found") }
         val supplier = supplierRepository.findById(request.supplierId)
                 .orElseThrow { IllegalArgumentException("supplier id not found") }
-
         return Purchase(
-                id = request.id,
+                id = id,
                 item = request.item,
                 code = request.code,
                 amount = request.amount,

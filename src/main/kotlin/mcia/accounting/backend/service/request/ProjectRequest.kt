@@ -1,7 +1,6 @@
 package mcia.accounting.backend.service.request
 
-data class ProjectRequest(val id: Long = -1,
-                          val name: String,
+data class ProjectRequest(val name: String,
                           val description: String,
                           val code: String,
                           val finished: Boolean,

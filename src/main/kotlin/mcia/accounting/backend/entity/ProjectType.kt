@@ -6,6 +6,6 @@ import javax.persistence.*
 data class ProjectType(
 
         @GeneratedValue(strategy = GenerationType.AUTO)
-        @Id val id: Long = -1,
+        @Id var id: Long = -1,
 
         @Column var name: String)

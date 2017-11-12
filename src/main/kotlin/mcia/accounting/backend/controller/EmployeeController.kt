@@ -12,38 +12,39 @@ class EmployeeController(private val employeeRepository: EmployeeRepository) {
 
     @GetMapping
     fun findAll(): Iterable<Employee> {
-        log.info("GET $PATH")
+        log.debug("GET {}", PATH)
         return employeeRepository.findAll()
     }
 
     @GetMapping("/{id}")
     fun findById(@PathVariable id: Long): Employee {
-        log.info("GET $PATH/$id")
+        log.debug("GET {}/{}", PATH, id)
         return employeeRepository.findById(id)
                 .orElseThrow { RuntimeException("not found") }
     }
 
     @PostMapping
     fun create(@RequestBody employee: Employee): Employee {
-        log.info("POST $PATH $employee")
+        log.debug("POST {} {}", PATH, employee)
         if (employee.id < 0)
             return employeeRepository.save(employee)
         else
             throw RuntimeException("insert cannot set the id")
     }
 
-    @PutMapping
-    fun update(@RequestBody employee: Employee): Employee {
-        log.info("PUT $PATH $employee")
-        if (employeeRepository.existsById(employee.id))
+    @PutMapping("/{id}")
+    fun update(@PathVariable id: Long, @RequestBody employee: Employee): Employee {
+        log.debug("PUT {}/{} {}", PATH, id, employee)
+        if (employeeRepository.existsById(id)) {
+            employee.id = id
             return employeeRepository.save(employee)
-        else
+        } else
             throw RuntimeException("id not found")
     }
 
     @DeleteMapping("/{id}")
     fun delete(@PathVariable id: Long) {
-        log.info("DELETE $PATH/$id")
+        log.debug("DELETE {}/{}", PATH, id)
         return employeeRepository.deleteById(id)
     }
 

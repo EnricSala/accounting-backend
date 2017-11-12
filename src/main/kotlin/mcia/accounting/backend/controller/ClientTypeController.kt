@@ -12,38 +12,39 @@ class ClientTypeController(private val clientTypeRepository: ClientTypeRepositor
 
     @GetMapping
     fun findAll(): Iterable<ClientType> {
-        log.info("GET $PATH")
+        log.debug("GET {}", PATH)
         return clientTypeRepository.findAll()
     }
 
     @GetMapping("/{id}")
     fun findById(@PathVariable id: Long): ClientType {
-        log.info("GET $PATH/$id")
+        log.debug("GET {}/{}", PATH, id)
         return clientTypeRepository.findById(id)
                 .orElseThrow { RuntimeException("not found") }
     }
 
     @PostMapping
     fun create(@RequestBody clientType: ClientType): ClientType {
-        log.info("POST $PATH $clientType")
+        log.debug("POST {} {}", PATH, clientType)
         if (clientType.id < 0)
             return clientTypeRepository.save(clientType)
         else
             throw RuntimeException("insert cannot set the id")
     }
 
-    @PutMapping
-    fun update(@RequestBody clientType: ClientType): ClientType {
-        log.info("PUT $PATH $clientType")
-        if (clientTypeRepository.existsById(clientType.id))
+    @PutMapping("/{id}")
+    fun update(@PathVariable id: Long, @RequestBody clientType: ClientType): ClientType {
+        log.debug("PUT {}/{} {}", PATH, id, clientType)
+        if (clientTypeRepository.existsById(id)) {
+            clientType.id = id
             return clientTypeRepository.save(clientType)
-        else
+        } else
             throw RuntimeException("id not found")
     }
 
     @DeleteMapping("/{id}")
     fun delete(@PathVariable id: Long) {
-        log.info("DELETE $PATH/$id")
+        log.debug("DELETE {}/{}", PATH, id)
         return clientTypeRepository.deleteById(id)
     }
 

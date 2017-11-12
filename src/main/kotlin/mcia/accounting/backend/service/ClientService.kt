@@ -20,17 +20,14 @@ class ClientService(private val clientRepository: ClientRepository,
             .orElseThrow { RuntimeException("client id not found") }
 
     @Transactional
-    fun create(request: ClientRequest): Client = when {
-        request.id < 0 ->
+    fun create(request: ClientRequest): Client =
             clientRepository.save(toClient(request))
                     .also { log.info("Created {}", it) }
-        else -> throw RuntimeException("id must not be set on create")
-    }
 
     @Transactional
-    fun update(request: ClientRequest): Client = when {
-        clientRepository.existsById(request.id) ->
-            clientRepository.save(toClient(request))
+    fun update(id: Long, request: ClientRequest): Client = when {
+        clientRepository.existsById(id) ->
+            clientRepository.save(toClient(request, id))
                     .also { log.info("Updated {}", it) }
         else -> throw RuntimeException("client id not found")
     }
@@ -39,12 +36,11 @@ class ClientService(private val clientRepository: ClientRepository,
     fun deleteById(id: Long) = clientRepository.deleteById(id)
             .also { log.info("Deleted Client(id={})", id) }
 
-    private fun toClient(request: ClientRequest): Client {
+    private fun toClient(request: ClientRequest, id: Long = -1): Client {
         val type = clientTypeRepository.findById(request.typeId)
                 .orElseThrow { IllegalArgumentException("client type id not found") }
-
         return Client(
-                id = request.id,
+                id = id,
                 name = request.name,
                 acronym = request.acronym,
                 type = type)

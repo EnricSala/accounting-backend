@@ -39,10 +39,10 @@ class PurchaseController(private val purchaseService: PurchaseService) {
         return purchaseService.create(request)
     }
 
-    @PutMapping
-    fun update(@RequestBody request: PurchaseRequest): Purchase {
-        log.debug("PUT {} {}", PATH, request)
-        return purchaseService.update(request)
+    @PutMapping("/{id}")
+    fun update(@PathVariable id: Long, @RequestBody request: PurchaseRequest): Purchase {
+        log.debug("PUT {}/{} {}", PATH, id, request)
+        return purchaseService.update(id, request)
     }
 
     @DeleteMapping("/{id}")

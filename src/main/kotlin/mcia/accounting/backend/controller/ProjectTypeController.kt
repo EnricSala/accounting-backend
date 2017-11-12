@@ -12,38 +12,39 @@ class ProjectTypeController(private val projectTypeRepository: ProjectTypeReposi
 
     @GetMapping
     fun findAll(): Iterable<ProjectType> {
-        log.info("GET $PATH")
+        log.debug("GET {}", PATH)
         return projectTypeRepository.findAll()
     }
 
     @GetMapping("/{id}")
     fun findById(@PathVariable id: Long): ProjectType {
-        log.info("GET $PATH/$id")
+        log.debug("GET {}/{}", PATH, id)
         return projectTypeRepository.findById(id)
                 .orElseThrow { RuntimeException("not found") }
     }
 
     @PostMapping
     fun create(@RequestBody projectType: ProjectType): ProjectType {
-        log.info("POST $PATH $projectType")
+        log.debug("POST {} {}", PATH, projectType)
         if (projectType.id < 0)
             return projectTypeRepository.save(projectType)
         else
             throw RuntimeException("insert cannot set the id")
     }
 
-    @PutMapping
-    fun update(@RequestBody projectType: ProjectType): ProjectType {
-        log.info("PUT $PATH $projectType")
-        if (projectTypeRepository.existsById(projectType.id))
+    @PutMapping("/{id}")
+    fun update(@PathVariable id: Long, @RequestBody projectType: ProjectType): ProjectType {
+        log.debug("PUT {}/{} {}", PATH, id, projectType)
+        if (projectTypeRepository.existsById(id)) {
+            projectType.id = id
             return projectTypeRepository.save(projectType)
-        else
+        } else
             throw RuntimeException("id not found")
     }
 
     @DeleteMapping("/{id}")
     fun delete(@PathVariable id: Long) {
-        log.info("DELETE $PATH/$id")
+        log.debug("DELETE {}/{}", PATH, id)
         return projectTypeRepository.deleteById(id)
     }
 

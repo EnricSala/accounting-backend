@@ -12,38 +12,39 @@ class SupplierController(private val supplierRepository: SupplierRepository) {
 
     @GetMapping
     fun findAll(): Iterable<Supplier> {
-        log.info("GET $PATH")
+        log.debug("GET {}", PATH)
         return supplierRepository.findAll()
     }
 
     @GetMapping("/{id}")
     fun findById(@PathVariable id: Long): Supplier {
-        log.info("GET $PATH/$id")
+        log.debug("GET {}/{}", PATH, id)
         return supplierRepository.findById(id)
                 .orElseThrow { RuntimeException("not found") }
     }
 
     @PostMapping
     fun create(@RequestBody supplier: Supplier): Supplier {
-        log.info("POST $PATH $supplier")
+        log.debug("POST {} {}", PATH, supplier)
         if (supplier.id < 0)
             return supplierRepository.save(supplier)
         else
             throw RuntimeException("insert cannot set the id")
     }
 
-    @PutMapping
-    fun update(@RequestBody supplier: Supplier): Supplier {
-        log.info("PUT $PATH $supplier")
-        if (supplierRepository.existsById(supplier.id))
+    @PutMapping("/{id}")
+    fun update(@PathVariable id: Long, @RequestBody supplier: Supplier): Supplier {
+        log.debug("PUT {}/{} {}", PATH, id, supplier)
+        if (supplierRepository.existsById(id)) {
+            supplier.id = id
             return supplierRepository.save(supplier)
-        else
+        } else
             throw RuntimeException("id not found")
     }
 
     @DeleteMapping("/{id}")
     fun delete(@PathVariable id: Long) {
-        log.info("DELETE $PATH/$id")
+        log.debug("DELETE {}/{}", PATH, id)
         return supplierRepository.deleteById(id)
     }
 

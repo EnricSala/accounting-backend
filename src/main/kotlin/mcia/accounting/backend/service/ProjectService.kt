@@ -26,17 +26,14 @@ class ProjectService(private val projectRepository: ProjectRepository,
             .orElseThrow { RuntimeException("project id not found") }
 
     @Transactional
-    fun create(request: ProjectRequest): Project = when {
-        request.id < 0 ->
+    fun create(request: ProjectRequest): Project =
             projectRepository.save(toProject(request))
                     .also { log.info("Created {}", it) }
-        else -> throw RuntimeException("id must not be set on create")
-    }
 
     @Transactional
-    fun update(request: ProjectRequest): Project = when {
-        projectRepository.existsById(request.id) ->
-            projectRepository.save(toProject(request))
+    fun update(id: Long, request: ProjectRequest): Project = when {
+        projectRepository.existsById(id) ->
+            projectRepository.save(toProject(request, id))
                     .also { log.info("Updated {}", it) }
         else -> throw RuntimeException("project id not found")
     }
@@ -45,16 +42,15 @@ class ProjectService(private val projectRepository: ProjectRepository,
     fun deleteById(id: Long) = projectRepository.deleteById(id)
             .also { log.info("Deleted Project(id={})", id) }
 
-    private fun toProject(request: ProjectRequest): Project {
+    private fun toProject(request: ProjectRequest, id: Long = -1): Project {
         val type = projectTypeRepository.findById(request.typeId)
                 .orElseThrow { IllegalArgumentException("project type id not found") }
         val client = clientRepository.findById(request.clientId)
                 .orElseThrow { IllegalArgumentException("client id not found") }
         val manager = employeeRepository.findById(request.managerId)
                 .orElseThrow { IllegalArgumentException("manager id not found") }
-
         return Project(
-                id = request.id,
+                id = id,
                 name = request.name,
                 description = request.description,
                 code = request.code,

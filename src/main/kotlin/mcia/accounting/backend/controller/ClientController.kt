@@ -29,10 +29,10 @@ class ClientController(private val clientService: ClientService) {
         return clientService.create(request)
     }
 
-    @PutMapping
-    fun update(@RequestBody request: ClientRequest): Client {
-        log.debug("PUT {} {}", PATH, request)
-        return clientService.update(request)
+    @PutMapping("/{id}")
+    fun update(@PathVariable id: Long, @RequestBody request: ClientRequest): Client {
+        log.debug("PUT {}/{} {}", PATH, id, request)
+        return clientService.update(id, request)
     }
 
     @DeleteMapping("/{id}")

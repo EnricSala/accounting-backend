@@ -3,8 +3,7 @@ package mcia.accounting.backend.service.request
 import java.math.BigDecimal
 import java.util.*
 
-data class PurchaseRequest(val id: Long = -1,
-                           val item: String,
+data class PurchaseRequest(val item: String,
                            val code: String,
                            val amount: BigDecimal,
                            val comments: String,

@@ -30,10 +30,10 @@ class ProjectController(private val projectService: ProjectService) {
         return projectService.create(request)
     }
 
-    @PutMapping
-    fun update(@RequestBody request: ProjectRequest): Project {
-        log.debug("PUT {} {}", PATH, request)
-        return projectService.update(request)
+    @PutMapping("/{id}")
+    fun update(@PathVariable id: Long, @RequestBody request: ProjectRequest): Project {
+        log.debug("PUT {}/{} {}", PATH, id, request)
+        return projectService.update(id, request)
     }
 
     @DeleteMapping("/{id}")

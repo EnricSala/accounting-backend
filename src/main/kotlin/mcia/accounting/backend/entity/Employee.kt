@@ -6,7 +6,7 @@ import javax.persistence.*
 data class Employee(
 
         @GeneratedValue(strategy = GenerationType.AUTO)
-        @Id val id: Long = -1,
+        @Id var id: Long = -1,
 
         @Column var fullname: String,
 

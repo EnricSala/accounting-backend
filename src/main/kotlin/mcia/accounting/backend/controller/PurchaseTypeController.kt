@@ -12,38 +12,39 @@ class PurchaseTypeController(private val purchaseTypeRepository: PurchaseTypeRep
 
     @GetMapping
     fun findAll(): Iterable<PurchaseType> {
-        log.info("GET $PATH")
+        log.debug("GET {}", PATH)
         return purchaseTypeRepository.findAll()
     }
 
     @GetMapping("/{id}")
     fun findById(@PathVariable id: Long): PurchaseType {
-        log.info("GET $PATH/$id")
+        log.debug("GET {}/{}", PATH, id)
         return purchaseTypeRepository.findById(id)
                 .orElseThrow { RuntimeException("not found") }
     }
 
     @PostMapping
     fun create(@RequestBody purchaseType: PurchaseType): PurchaseType {
-        log.info("POST $PATH $purchaseType")
+        log.debug("POST {} {}", PATH, purchaseType)
         if (purchaseType.id < 0)
             return purchaseTypeRepository.save(purchaseType)
         else
             throw RuntimeException("insert cannot set the id")
     }
 
-    @PutMapping
-    fun update(@RequestBody purchaseType: PurchaseType): PurchaseType {
-        log.info("PUT $PATH $purchaseType")
-        if (purchaseTypeRepository.existsById(purchaseType.id))
+    @PutMapping("/{id}")
+    fun update(@PathVariable id: Long, @RequestBody purchaseType: PurchaseType): PurchaseType {
+        log.debug("PUT {}/{} {}", PATH, id, purchaseType)
+        if (purchaseTypeRepository.existsById(id)) {
+            purchaseType.id = id
             return purchaseTypeRepository.save(purchaseType)
-        else
+        } else
             throw RuntimeException("id not found")
     }
 
     @DeleteMapping("/{id}")
     fun delete(@PathVariable id: Long) {
-        log.info("DELETE $PATH/$id")
+        log.debug("DELETE {}/{}", PATH, id)
         return purchaseTypeRepository.deleteById(id)
     }
 
