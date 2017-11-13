@@ -2,6 +2,7 @@ package mcia.accounting.backend.service
 
 import mcia.accounting.backend.entity.Purchase
 import mcia.accounting.backend.repository.*
+import mcia.accounting.backend.service.exception.ResourceNotFoundException
 import mcia.accounting.backend.service.request.PurchaseRequest
 import mcia.accounting.backend.utils.loggerOf
 import org.springframework.data.domain.Page
@@ -26,7 +27,7 @@ class PurchaseService(private val purchaseRepository: PurchaseRepository,
 
     @Transactional(readOnly = true)
     fun findById(id: Long): Purchase = purchaseRepository.findById(id)
-            .orElseThrow { RuntimeException("purchase id not found") }
+            .orElseThrow { ResourceNotFoundException("purchase id not found") }
 
     @Transactional
     fun create(request: PurchaseRequest): Purchase =
@@ -38,7 +39,7 @@ class PurchaseService(private val purchaseRepository: PurchaseRepository,
         purchaseRepository.existsById(id) ->
             purchaseRepository.save(toPurchase(request, id))
                     .also { log.info("Updated {}", it) }
-        else -> throw RuntimeException("purchase id not found")
+        else -> throw ResourceNotFoundException("purchase id not found")
     }
 
     @Transactional
@@ -50,17 +51,17 @@ class PurchaseService(private val purchaseRepository: PurchaseRepository,
 
     private fun toPurchase(request: PurchaseRequest, purchaseId: Long = -1): Purchase {
         val requestingEmployee = employeeRepository.findById(request.requestingEmployeeId)
-                .orElseThrow { IllegalArgumentException("employee id not found") }
+                .orElseThrow { ResourceNotFoundException("employee id not found") }
         val requestingProject = projectRepository.findById(request.requestingProjectId)
-                .orElseThrow { IllegalArgumentException("project id not found") }
+                .orElseThrow { ResourceNotFoundException("project id not found") }
         val chargingProject = projectRepository.findById(request.chargingProjectId)
-                .orElseThrow { IllegalArgumentException("project id not found") }
+                .orElseThrow { ResourceNotFoundException("project id not found") }
         val state = purchaseStateRepository.findById(request.stateId)
-                .orElseThrow { IllegalArgumentException("purchase state id not found") }
+                .orElseThrow { ResourceNotFoundException("purchase-state id not found") }
         val type = purchaseTypeRepository.findById(request.typeId)
-                .orElseThrow { IllegalArgumentException("purchase type id not found") }
+                .orElseThrow { ResourceNotFoundException("purchase-type id not found") }
         val supplier = supplierRepository.findById(request.supplierId)
-                .orElseThrow { IllegalArgumentException("supplier id not found") }
+                .orElseThrow { ResourceNotFoundException("supplier id not found") }
         return Purchase(
                 id = purchaseId,
                 item = request.item,

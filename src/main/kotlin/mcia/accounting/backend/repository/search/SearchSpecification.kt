@@ -1,6 +1,7 @@
 package mcia.accounting.backend.repository.search
 
 import mcia.accounting.backend.repository.search.SearchOperation.*
+import mcia.accounting.backend.service.exception.InvalidRequestException
 import org.springframework.data.jpa.domain.Specification
 import java.util.*
 import javax.persistence.criteria.CriteriaBuilder
@@ -24,7 +25,7 @@ object SearchSpecification {
                     .map { of<T>(it) }
                     .reduce { acc, next -> Specification.where(acc).and(next) }
         } catch (e: UnsupportedOperationException) {
-            throw IllegalArgumentException("invalid query: $query", e)
+            throw InvalidRequestException("invalid query: $query", e)
         }
     }
 
@@ -48,13 +49,13 @@ object SearchSpecification {
                     GREATER_THAN -> when (type) {
                         String::class -> builder.greaterThanOrEqualTo(path.get<String>(prop), criteria.value)
                         Date::class -> builder.greaterThanOrEqualTo(path.get<Date>(prop), criteria.date())
-                        Boolean::class -> throw IllegalArgumentException("greater_than does not support $type")
+                        Boolean::class -> throw InvalidRequestException("greater_than does not support $type")
                         else -> builder.greaterThanOrEqualTo(path.get<String>(prop), criteria.value)
                     }
                     LESS_THAN -> when (type) {
                         String::class -> builder.lessThanOrEqualTo(path.get<String>(prop), criteria.value)
                         Date::class -> builder.lessThanOrEqualTo(path.get<Date>(prop), criteria.date())
-                        Boolean::class -> throw IllegalArgumentException("less_than does not support $type")
+                        Boolean::class -> throw InvalidRequestException("less_than does not support $type")
                         else -> builder.lessThanOrEqualTo(path.get<String>(prop), criteria.value)
                     }
                     CONTAINS -> when (type) {
@@ -62,9 +63,9 @@ object SearchSpecification {
                             val upperCase = builder.upper(path.get<String>(prop))
                             builder.like(upperCase, "%${criteria.value.toUpperCase()}%")
                         }
-                        else -> throw IllegalArgumentException("contains does not support $type")
+                        else -> throw InvalidRequestException("contains does not support $type")
                     }
-                    else -> throw UnsupportedOperationException("unsupported search operation")
+                    else -> throw InvalidRequestException("unsupported search operation")
                 }
             }
 
@@ -73,7 +74,7 @@ object SearchSpecification {
         for (part in property.split(PROPERTY_DELIMITER)) {
             val props = type.declaredMemberProperties
             type = props.firstOrNull { it.name == part }?.returnType?.jvmErasure
-                    ?: throw IllegalArgumentException("unknown property $property")
+                    ?: throw InvalidRequestException("unknown property $property")
         }
         return type
     }

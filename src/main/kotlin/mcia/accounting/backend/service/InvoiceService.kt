@@ -3,6 +3,8 @@ package mcia.accounting.backend.service
 import mcia.accounting.backend.config.AppSettings
 import mcia.accounting.backend.entity.Purchase
 import mcia.accounting.backend.repository.PurchaseRepository
+import mcia.accounting.backend.service.exception.FileNotFoundException
+import mcia.accounting.backend.service.exception.ResourceNotFoundException
 import mcia.accounting.backend.utils.loggerOf
 import org.springframework.core.io.FileSystemResource
 import org.springframework.stereotype.Service
@@ -21,20 +23,20 @@ class InvoiceService(private val settings: AppSettings,
     @Transactional(readOnly = true)
     fun findInvoiceOf(purchaseId: Long): FileSystemResource {
         val purchase = purchaseRepository.findById(purchaseId)
-                .orElseThrow { RuntimeException("purchase id not found") }
+                .orElseThrow { FileNotFoundException("purchase id not found") }
         val invoicePath = purchase.invoicePath
-                ?: throw RuntimeException("no invoice is attached")
+                ?: throw FileNotFoundException("no invoice is attached")
         val baseDir = settings.invoiceBaseDir
         val invoiceFile = File(baseDir, invoicePath)
         if (!invoiceFile.isFile)
-            throw RuntimeException("cannot find invoice: $invoicePath")
+            throw FileNotFoundException("cannot find invoice: $invoicePath")
         return FileSystemResource(invoiceFile)
     }
 
     @Transactional
     fun saveInvoiceTo(purchaseId: Long, newInvoice: MultipartFile): Purchase {
         val purchase = purchaseRepository.findById(purchaseId)
-                .orElseThrow { RuntimeException("purchase id not found") }
+                .orElseThrow { ResourceNotFoundException("purchase id not found") }
 
         val date = Date()
         val dirname = DIR_FORMATTER.format(date)
@@ -67,7 +69,7 @@ class InvoiceService(private val settings: AppSettings,
     @Transactional
     fun deleteInvoiceOf(purchaseId: Long): Purchase {
         val purchase = purchaseRepository.findById(purchaseId)
-                .orElseThrow { RuntimeException("purchase id not found") }
+                .orElseThrow { ResourceNotFoundException("purchase id not found") }
 
         val baseDir = settings.invoiceBaseDir
         val invoicePath = purchase.invoicePath
@@ -78,8 +80,7 @@ class InvoiceService(private val settings: AppSettings,
             try {
                 Files.delete(invoiceFile.toPath())
             } catch (t: Throwable) {
-                log.error("Could not delete $invoiceFile", t)
-                throw IllegalStateException("could not delete invoice: $invoicePath")
+                throw RuntimeException("could not delete invoice: $invoicePath", t)
             }
         }
 

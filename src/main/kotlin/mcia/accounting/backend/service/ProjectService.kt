@@ -5,6 +5,7 @@ import mcia.accounting.backend.repository.ClientRepository
 import mcia.accounting.backend.repository.EmployeeRepository
 import mcia.accounting.backend.repository.ProjectRepository
 import mcia.accounting.backend.repository.ProjectTypeRepository
+import mcia.accounting.backend.service.exception.ResourceNotFoundException
 import mcia.accounting.backend.service.request.ProjectRequest
 import mcia.accounting.backend.utils.loggerOf
 import org.springframework.data.jpa.domain.Specification
@@ -23,7 +24,7 @@ class ProjectService(private val projectRepository: ProjectRepository,
 
     @Transactional(readOnly = true)
     fun findById(id: Long): Project = projectRepository.findById(id)
-            .orElseThrow { RuntimeException("project id not found") }
+            .orElseThrow { ResourceNotFoundException("project id not found") }
 
     @Transactional
     fun create(request: ProjectRequest): Project =
@@ -35,7 +36,7 @@ class ProjectService(private val projectRepository: ProjectRepository,
         projectRepository.existsById(id) ->
             projectRepository.save(toProject(request, id))
                     .also { log.info("Updated {}", it) }
-        else -> throw RuntimeException("project id not found")
+        else -> throw ResourceNotFoundException("project id not found")
     }
 
     @Transactional
@@ -44,11 +45,11 @@ class ProjectService(private val projectRepository: ProjectRepository,
 
     private fun toProject(request: ProjectRequest, id: Long = -1): Project {
         val type = projectTypeRepository.findById(request.typeId)
-                .orElseThrow { IllegalArgumentException("project type id not found") }
+                .orElseThrow { ResourceNotFoundException("project-type id not found") }
         val client = clientRepository.findById(request.clientId)
-                .orElseThrow { IllegalArgumentException("client id not found") }
+                .orElseThrow { ResourceNotFoundException("client id not found") }
         val manager = employeeRepository.findById(request.managerId)
-                .orElseThrow { IllegalArgumentException("manager id not found") }
+                .orElseThrow { ResourceNotFoundException("manager id not found") }
         return Project(
                 id = id,
                 name = request.name,

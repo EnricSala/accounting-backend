@@ -3,6 +3,8 @@ package mcia.accounting.backend.controller
 import mcia.accounting.backend.config.WebConfig
 import mcia.accounting.backend.entity.Employee
 import mcia.accounting.backend.repository.EmployeeRepository
+import mcia.accounting.backend.service.exception.InvalidRequestException
+import mcia.accounting.backend.service.exception.ResourceNotFoundException
 import mcia.accounting.backend.utils.loggerOf
 import org.springframework.web.bind.annotation.*
 
@@ -20,7 +22,7 @@ class EmployeeController(private val employeeRepository: EmployeeRepository) {
     fun findById(@PathVariable id: Long): Employee {
         log.debug("GET {}/{}", PATH, id)
         return employeeRepository.findById(id)
-                .orElseThrow { RuntimeException("not found") }
+                .orElseThrow { ResourceNotFoundException("employee id not found") }
     }
 
     @PostMapping
@@ -29,7 +31,7 @@ class EmployeeController(private val employeeRepository: EmployeeRepository) {
         if (employee.id < 0)
             return employeeRepository.save(employee)
         else
-            throw RuntimeException("insert cannot set the id")
+            throw InvalidRequestException("insert cannot set the id")
     }
 
     @PutMapping("/{id}")
@@ -39,7 +41,7 @@ class EmployeeController(private val employeeRepository: EmployeeRepository) {
             employee.id = id
             return employeeRepository.save(employee)
         } else
-            throw RuntimeException("id not found")
+            throw ResourceNotFoundException("employee id not found")
     }
 
     @DeleteMapping("/{id}")

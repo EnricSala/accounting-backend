@@ -3,6 +3,8 @@ package mcia.accounting.backend.controller
 import mcia.accounting.backend.config.WebConfig
 import mcia.accounting.backend.entity.ProjectType
 import mcia.accounting.backend.repository.ProjectTypeRepository
+import mcia.accounting.backend.service.exception.InvalidRequestException
+import mcia.accounting.backend.service.exception.ResourceNotFoundException
 import mcia.accounting.backend.utils.loggerOf
 import org.springframework.web.bind.annotation.*
 
@@ -20,7 +22,7 @@ class ProjectTypeController(private val projectTypeRepository: ProjectTypeReposi
     fun findById(@PathVariable id: Long): ProjectType {
         log.debug("GET {}/{}", PATH, id)
         return projectTypeRepository.findById(id)
-                .orElseThrow { RuntimeException("not found") }
+                .orElseThrow { ResourceNotFoundException("project-type not found") }
     }
 
     @PostMapping
@@ -29,7 +31,7 @@ class ProjectTypeController(private val projectTypeRepository: ProjectTypeReposi
         if (projectType.id < 0)
             return projectTypeRepository.save(projectType)
         else
-            throw RuntimeException("insert cannot set the id")
+            throw InvalidRequestException("insert cannot set the id")
     }
 
     @PutMapping("/{id}")
@@ -39,7 +41,7 @@ class ProjectTypeController(private val projectTypeRepository: ProjectTypeReposi
             projectType.id = id
             return projectTypeRepository.save(projectType)
         } else
-            throw RuntimeException("id not found")
+            throw ResourceNotFoundException("project-type id not found")
     }
 
     @DeleteMapping("/{id}")

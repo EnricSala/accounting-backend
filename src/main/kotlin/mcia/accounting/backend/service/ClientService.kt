@@ -3,6 +3,7 @@ package mcia.accounting.backend.service
 import mcia.accounting.backend.entity.Client
 import mcia.accounting.backend.repository.ClientRepository
 import mcia.accounting.backend.repository.ClientTypeRepository
+import mcia.accounting.backend.service.exception.ResourceNotFoundException
 import mcia.accounting.backend.service.request.ClientRequest
 import mcia.accounting.backend.utils.loggerOf
 import org.springframework.stereotype.Service
@@ -17,7 +18,7 @@ class ClientService(private val clientRepository: ClientRepository,
 
     @Transactional(readOnly = true)
     fun findById(id: Long): Client = clientRepository.findById(id)
-            .orElseThrow { RuntimeException("client id not found") }
+            .orElseThrow { ResourceNotFoundException("client id not found") }
 
     @Transactional
     fun create(request: ClientRequest): Client =
@@ -29,7 +30,7 @@ class ClientService(private val clientRepository: ClientRepository,
         clientRepository.existsById(id) ->
             clientRepository.save(toClient(request, id))
                     .also { log.info("Updated {}", it) }
-        else -> throw RuntimeException("client id not found")
+        else -> throw ResourceNotFoundException("client id not found")
     }
 
     @Transactional
@@ -38,7 +39,7 @@ class ClientService(private val clientRepository: ClientRepository,
 
     private fun toClient(request: ClientRequest, id: Long = -1): Client {
         val type = clientTypeRepository.findById(request.typeId)
-                .orElseThrow { IllegalArgumentException("client type id not found") }
+                .orElseThrow { ResourceNotFoundException("client-type id not found") }
         return Client(
                 id = id,
                 name = request.name,

@@ -3,6 +3,8 @@ package mcia.accounting.backend.controller
 import mcia.accounting.backend.config.WebConfig
 import mcia.accounting.backend.entity.ClientType
 import mcia.accounting.backend.repository.ClientTypeRepository
+import mcia.accounting.backend.service.exception.InvalidRequestException
+import mcia.accounting.backend.service.exception.ResourceNotFoundException
 import mcia.accounting.backend.utils.loggerOf
 import org.springframework.web.bind.annotation.*
 
@@ -20,7 +22,7 @@ class ClientTypeController(private val clientTypeRepository: ClientTypeRepositor
     fun findById(@PathVariable id: Long): ClientType {
         log.debug("GET {}/{}", PATH, id)
         return clientTypeRepository.findById(id)
-                .orElseThrow { RuntimeException("not found") }
+                .orElseThrow { ResourceNotFoundException("client-type id not found") }
     }
 
     @PostMapping
@@ -29,7 +31,7 @@ class ClientTypeController(private val clientTypeRepository: ClientTypeRepositor
         if (clientType.id < 0)
             return clientTypeRepository.save(clientType)
         else
-            throw RuntimeException("insert cannot set the id")
+            throw InvalidRequestException("insert cannot set the id")
     }
 
     @PutMapping("/{id}")
@@ -39,7 +41,7 @@ class ClientTypeController(private val clientTypeRepository: ClientTypeRepositor
             clientType.id = id
             return clientTypeRepository.save(clientType)
         } else
-            throw RuntimeException("id not found")
+            throw ResourceNotFoundException("client-type id not found")
     }
 
     @DeleteMapping("/{id}")
