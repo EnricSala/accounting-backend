@@ -20,7 +20,7 @@ data class Purchase(
 
         @Column var requestDate: Date,
 
-        @Column var invoiceFile: String?,
+        @Column var invoicePath: String?,
 
         @ManyToOne var requestingEmployee: Employee,
 

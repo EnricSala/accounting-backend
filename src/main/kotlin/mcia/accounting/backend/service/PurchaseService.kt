@@ -16,7 +16,8 @@ class PurchaseService(private val purchaseRepository: PurchaseRepository,
                       private val purchaseTypeRepository: PurchaseTypeRepository,
                       private val projectRepository: ProjectRepository,
                       private val employeeRepository: EmployeeRepository,
-                      private val supplierRepository: SupplierRepository) {
+                      private val supplierRepository: SupplierRepository,
+                      private val invoiceService: InvoiceService) {
 
     @Transactional(readOnly = true)
     fun search(specification: Specification<Purchase>,
@@ -41,10 +42,13 @@ class PurchaseService(private val purchaseRepository: PurchaseRepository,
     }
 
     @Transactional
-    fun deleteById(id: Long) = purchaseRepository.deleteById(id)
-            .also { log.info("Deleted Purchase(id={})", id) }
+    fun deleteById(id: Long) {
+        invoiceService.deleteInvoiceOf(id)
+        purchaseRepository.deleteById(id)
+        log.info("Deleted Purchase(id={})", id)
+    }
 
-    private fun toPurchase(request: PurchaseRequest, id: Long = -1): Purchase {
+    private fun toPurchase(request: PurchaseRequest, purchaseId: Long = -1): Purchase {
         val requestingEmployee = employeeRepository.findById(request.requestingEmployeeId)
                 .orElseThrow { IllegalArgumentException("employee id not found") }
         val requestingProject = projectRepository.findById(request.requestingProjectId)
@@ -58,19 +62,25 @@ class PurchaseService(private val purchaseRepository: PurchaseRepository,
         val supplier = supplierRepository.findById(request.supplierId)
                 .orElseThrow { IllegalArgumentException("supplier id not found") }
         return Purchase(
-                id = id,
+                id = purchaseId,
                 item = request.item,
                 code = request.code,
                 amount = request.amount,
                 comments = request.comments,
                 requestDate = request.requestDate,
-                invoiceFile = request.invoiceFile,
+                invoicePath = invoicePathOf(purchaseId),
                 requestingEmployee = requestingEmployee,
                 requestingProject = requestingProject,
                 chargingProject = chargingProject,
                 state = state,
                 type = type,
                 supplier = supplier)
+    }
+
+    private fun invoicePathOf(purchaseId: Long): String? = when {
+        purchaseId < 0 -> null
+        else -> purchaseRepository.findById(purchaseId)
+                .map { it.invoicePath }.orElse(null)
     }
 
     companion object {
