@@ -11,7 +11,7 @@ data class SearchCriteria(val key: String,
     fun boolean(): Boolean = this.value.toBoolean()
 
     companion object {
-        private const val QUERY_PATTERN = "(.+?)([:<>!~])(.+?),"
+        private const val QUERY_PATTERN = "(.+?)([:<>!~])(.+?)(?:,|$)"
         private val QUERY_REGEX = Regex(QUERY_PATTERN)
 
         fun of(key: String, operation: String, value: String): SearchCriteria {
@@ -19,9 +19,8 @@ data class SearchCriteria(val key: String,
             return SearchCriteria(key, specOperation, value)
         }
 
-        // TODO: find a way to remove the extra comma
         fun from(query: String): List<SearchCriteria> {
-            return QUERY_REGEX.findAll("$query,")
+            return QUERY_REGEX.findAll(query)
                     .map { it.groupValues }
                     .map { SearchCriteria.of(it[1], it[2], it[3]) }
                     .filter { it.operation != SearchOperation.UNKNOWN }
