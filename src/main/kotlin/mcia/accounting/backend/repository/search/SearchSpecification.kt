@@ -20,13 +20,12 @@ object SearchSpecification {
 
     inline fun <reified T : Any> from(query: String): Specification<T> {
         if (query.isBlank()) return matchAll()
-        try {
-            return SearchCriteria.from(query)
-                    .map { of<T>(it) }
-                    .reduce { acc, next -> Specification.where(acc).and(next) }
-        } catch (e: UnsupportedOperationException) {
-            throw InvalidRequestException("invalid query: $query", e)
-        }
+        val criteria = SearchCriteria.from(query)
+        if (criteria.isEmpty())
+            throw InvalidRequestException("invalid query: $query")
+        return criteria
+                .map { of<T>(it) }
+                .reduce { acc, next -> Specification.where(acc).and(next) }
     }
 
     inline fun <reified T : Any> of(criteria: SearchCriteria): Specification<T> =
