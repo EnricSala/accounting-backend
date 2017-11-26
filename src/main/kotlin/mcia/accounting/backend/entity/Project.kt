@@ -20,4 +20,10 @@ data class Project(
 
         @ManyToOne var client: Client,
 
-        @ManyToOne var type: ProjectType)
+        @ManyToOne var type: ProjectType) {
+
+    companion object {
+        const val RESOURCE = "project"
+    }
+
+}

@@ -32,4 +32,10 @@ data class Purchase(
 
         @ManyToOne var type: PurchaseType,
 
-        @ManyToOne var supplier: Supplier)
+        @ManyToOne var supplier: Supplier) {
+
+    companion object {
+        const val RESOURCE = "purchase"
+    }
+
+}

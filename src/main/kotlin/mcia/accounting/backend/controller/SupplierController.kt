@@ -51,8 +51,8 @@ class SupplierController(private val supplierRepository: SupplierRepository) {
     }
 
     companion object {
-        internal const val PATH = "${WebConfig.BASE_API_PATH}/supplier"
         private val log = loggerOf(SupplierController::class)
+        const val PATH = WebConfig.BASE_API_PATH + "/" + Supplier.RESOURCE
     }
 
 }

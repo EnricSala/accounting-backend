@@ -43,8 +43,8 @@ class ProjectController(private val projectService: ProjectService) {
     }
 
     companion object {
-        internal const val PATH = "${WebConfig.BASE_API_PATH}/project"
         private val log = loggerOf(ProjectController::class)
+        const val PATH = WebConfig.BASE_API_PATH + "/" + Project.RESOURCE
     }
 
 }

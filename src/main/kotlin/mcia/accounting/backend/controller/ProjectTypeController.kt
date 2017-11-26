@@ -51,8 +51,8 @@ class ProjectTypeController(private val projectTypeRepository: ProjectTypeReposi
     }
 
     companion object {
-        internal const val PATH = "${WebConfig.BASE_API_PATH}/project-type"
         private val log = loggerOf(ProjectTypeController::class)
+        const val PATH = WebConfig.BASE_API_PATH + "/" + ProjectType.RESOURCE
     }
 
 }

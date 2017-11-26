@@ -51,8 +51,8 @@ class ClientTypeController(private val clientTypeRepository: ClientTypeRepositor
     }
 
     companion object {
-        internal const val PATH = "${WebConfig.BASE_API_PATH}/client-type"
         private val log = loggerOf(ClientTypeController::class)
+        const val PATH = WebConfig.BASE_API_PATH + "/" + ClientType.RESOURCE
     }
 
 }

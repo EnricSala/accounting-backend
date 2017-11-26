@@ -8,4 +8,10 @@ data class ProjectType(
         @GeneratedValue(strategy = GenerationType.AUTO)
         @Id var id: Long = -1,
 
-        @Column var name: String)
+        @Column var name: String) {
+
+    companion object {
+        const val RESOURCE = "project-type"
+    }
+
+}

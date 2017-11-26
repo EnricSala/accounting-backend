@@ -12,4 +12,10 @@ data class Employee(
 
         @Column var email: String,
 
-        @Column var comments: String)
+        @Column var comments: String) {
+
+    companion object {
+        const val RESOURCE = "employee"
+    }
+
+}

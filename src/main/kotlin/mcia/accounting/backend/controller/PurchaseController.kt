@@ -80,7 +80,7 @@ class PurchaseController(private val purchaseService: PurchaseService,
 
     companion object {
         private val log = loggerOf(PurchaseController::class)
-        internal const val PATH = "${WebConfig.BASE_API_PATH}/purchase"
+        const val PATH = WebConfig.BASE_API_PATH + "/" + Purchase.RESOURCE
         private const val INVOICE_MIME = MediaType.APPLICATION_PDF_VALUE
         private const val DISPOSITION_HEADER = "Content-Disposition"
         private const val DISPOSITION_VALUE = "inline; filename="

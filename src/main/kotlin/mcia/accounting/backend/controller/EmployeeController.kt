@@ -51,8 +51,8 @@ class EmployeeController(private val employeeRepository: EmployeeRepository) {
     }
 
     companion object {
-        internal const val PATH = "${WebConfig.BASE_API_PATH}/employee"
         private val log = loggerOf(EmployeeController::class)
+        const val PATH = WebConfig.BASE_API_PATH + "/" + Employee.RESOURCE
     }
 
 }

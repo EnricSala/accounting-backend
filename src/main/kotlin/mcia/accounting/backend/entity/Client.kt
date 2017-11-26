@@ -12,4 +12,10 @@ data class Client(
 
         @Column var acronym: String,
 
-        @ManyToOne var type: ClientType)
+        @ManyToOne var type: ClientType) {
+
+    companion object {
+        const val RESOURCE = "client"
+    }
+
+}

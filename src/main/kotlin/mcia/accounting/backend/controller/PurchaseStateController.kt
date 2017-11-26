@@ -51,8 +51,8 @@ class PurchaseStateController(private val purchaseStateRepository: PurchaseState
     }
 
     companion object {
-        internal const val PATH = "${WebConfig.BASE_API_PATH}/purchase-state"
         private val log = loggerOf(PurchaseStateController::class)
+        const val PATH = WebConfig.BASE_API_PATH + "/" + PurchaseState.RESOURCE
     }
 
 }
