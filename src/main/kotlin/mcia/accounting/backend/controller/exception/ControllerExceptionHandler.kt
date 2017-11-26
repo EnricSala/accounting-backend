@@ -1,4 +1,4 @@
-package mcia.accounting.backend.controller
+package mcia.accounting.backend.controller.exception
 
 import mcia.accounting.backend.controller.dto.ErrorMessage
 import mcia.accounting.backend.service.exception.FileNotFoundException
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
 @RestControllerAdvice
-class ExceptionHandler {
+class ControllerExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidRequestException::class)
@@ -41,9 +41,8 @@ class ExceptionHandler {
     }
 
     companion object {
-        private val log = loggerOf(ExceptionHandler::class)
+        private val log = loggerOf(ControllerExceptionHandler::class)
         private const val DEFAULT_REASON = "unknown reason"
-
     }
 
 }
