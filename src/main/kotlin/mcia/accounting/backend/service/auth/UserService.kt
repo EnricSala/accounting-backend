@@ -90,7 +90,7 @@ class UserService(private val userRepository: UserRepository,
         fun toRole(name: String) = try {
             AppRole.valueOf(name)
         } catch (e: IllegalArgumentException) {
-            throw InvalidRequestException("unkown role: $name")
+            throw InvalidRequestException("unknown role: $name")
         }
         return names.map { toRole(it) }.toMutableSet()
     }
