@@ -30,7 +30,7 @@ class SecurityConfig(private val userRepository: UserRepository) : WebSecurityCo
                 .authorizeRequests()
                     .antMatchers(HttpMethod.GET, "/js/**", "/css/**", "/img/**").permitAll()
                     .antMatchers(HttpMethod.GET, "/api/user/self").hasRole("USER")
-                    .antMatchers(HttpMethod.PUT, "/api/user/self/password").hasRole("USER")
+                    .antMatchers(HttpMethod.POST, "/api/user/self/password").hasRole("USER")
                     .antMatchers("/api/user/**").hasRole("ADMIN")
                     .antMatchers(HttpMethod.POST, "/api/purchase/**").hasRole("USER")
                     .antMatchers(HttpMethod.PUT, "/api/purchase/**").hasRole("USER")
