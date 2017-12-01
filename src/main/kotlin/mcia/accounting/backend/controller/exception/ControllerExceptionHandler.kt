@@ -4,6 +4,7 @@ import mcia.accounting.backend.controller.dto.ErrorMessage
 import mcia.accounting.backend.service.exception.FileNotFoundException
 import mcia.accounting.backend.service.exception.InvalidRequestException
 import mcia.accounting.backend.service.exception.ResourceNotFoundException
+import mcia.accounting.backend.service.exception.UnauthorizedException
 import mcia.accounting.backend.utils.loggerOf
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -18,6 +19,13 @@ class ControllerExceptionHandler {
     fun handleInvalidRequestException(exception: InvalidRequestException): ErrorMessage {
         log.warn("Bad request: {}", exception.message)
         return ErrorMessage.badRequest(exception.message ?: DEFAULT_REASON)
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(UnauthorizedException::class)
+    fun handleInvalidRequestException(exception: UnauthorizedException): ErrorMessage {
+        log.warn("Unauthorized: {}", exception.message)
+        return ErrorMessage.unauthorized(exception.message ?: DEFAULT_REASON)
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
