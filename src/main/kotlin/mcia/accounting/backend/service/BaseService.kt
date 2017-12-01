@@ -58,6 +58,6 @@ abstract class BaseService<T, in R>(protected val resource: String,
 
     @Transactional
     fun deleteById(id: Long) = repository.deleteById(id)
-            .also { log.info("Deleted Project(id={})", id) }
+            .also { log.info("Deleted $resource with id={}", id) }
 
 }
