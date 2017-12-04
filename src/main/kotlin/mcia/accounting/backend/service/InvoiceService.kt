@@ -71,8 +71,10 @@ class InvoiceService(private val settings: AppSettings,
         val purchase = purchaseRepository.findById(purchaseId)
                 .orElseThrow { ResourceNotFoundException("purchase id not found") }
 
-        val baseDir = settings.invoiceBaseDir
         val invoicePath = purchase.invoicePath
+        if (invoicePath.isNullOrBlank()) return purchase
+
+        val baseDir = settings.invoiceBaseDir
         val invoiceFile = File(baseDir, invoicePath)
 
         if (invoiceFile.isFile) {
