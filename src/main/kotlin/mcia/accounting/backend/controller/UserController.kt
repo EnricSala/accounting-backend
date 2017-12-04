@@ -54,9 +54,9 @@ class UserController(private val userService: UserService) {
         return userService.deleteById(id)
     }
 
-    @PutMapping("/{id}/password")
+    @PostMapping("/{id}/password")
     fun otherPasswordChange(@PathVariable id: Long, @RequestParam password: String, auth: Authentication) {
-        log.debug("PUT {}/{}/password {}", PATH, id, auth.name)
+        log.debug("POST {}/{}/password {}", PATH, id, auth.name)
         userService.forcePasswordChange(id, auth, password)
     }
 
