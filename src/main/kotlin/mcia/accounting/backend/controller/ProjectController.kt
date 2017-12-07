@@ -1,49 +1,27 @@
 package mcia.accounting.backend.controller
 
 import mcia.accounting.backend.config.WebConfig
+import mcia.accounting.backend.controller.dto.PageResult
 import mcia.accounting.backend.entity.Project
 import mcia.accounting.backend.repository.search.SearchSpecification
 import mcia.accounting.backend.service.ProjectService
 import mcia.accounting.backend.service.request.ProjectRequest
-import mcia.accounting.backend.utils.loggerOf
-import org.springframework.web.bind.annotation.*
+import org.springframework.data.domain.Sort
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping(ProjectController.PATH)
-class ProjectController(private val projectService: ProjectService) {
+class ProjectController(service: ProjectService) :
+        BaseController<Project, ProjectRequest>(PATH, service) {
 
-    @GetMapping
-    fun search(@RequestParam(value = "q", defaultValue = "") query: String): Iterable<Project> {
-        log.debug("GET {} q={}", PATH, query)
-        return projectService.search(SearchSpecification.from(query))
-    }
-
-    @GetMapping("/{id}")
-    fun findById(@PathVariable id: Long): Project {
-        log.debug("GET {}/{}", PATH, id)
-        return projectService.findById(id)
-    }
-
-    @PostMapping
-    fun create(@RequestBody request: ProjectRequest): Project {
-        log.debug("POST {} {}", PATH, request)
-        return projectService.create(request)
-    }
-
-    @PutMapping("/{id}")
-    fun update(@PathVariable id: Long, @RequestBody request: ProjectRequest): Project {
-        log.debug("PUT {}/{} {}", PATH, id, request)
-        return projectService.update(id, request)
-    }
-
-    @DeleteMapping("/{id}")
-    fun delete(@PathVariable id: Long) {
-        log.debug("DELETE {}/{}", PATH, id)
-        return projectService.deleteById(id)
+    override fun findBy(query: String, page: Int, size: Int): PageResult<Project> {
+        val sort = Sort.by(Sort.Order.asc("name"))
+        val specification = SearchSpecification.from<Project>(query)
+        return PageResult.just(service.search(specification, sort))
     }
 
     companion object {
-        private val log = loggerOf(ProjectController::class)
         const val PATH = WebConfig.BASE_API_PATH + "/" + Project.RESOURCE
     }
 
