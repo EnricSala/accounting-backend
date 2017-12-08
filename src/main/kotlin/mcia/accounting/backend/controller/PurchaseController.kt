@@ -28,7 +28,7 @@ class PurchaseController(service: PurchaseService, private val invoiceService: I
         return PageResult.of(service.search(specification, pageable))
     }
 
-    @GetMapping("/{id}/invoice", produces = arrayOf(INVOICE_MIME))
+    @GetMapping("/{id}/invoice", produces = [INVOICE_MIME])
     fun findInvoice(@PathVariable id: Long, response: HttpServletResponse): Resource {
         log.debug("GET {}/{}/invoice", PATH, id)
         return invoiceService.findInvoiceOf(id).also {
