@@ -27,13 +27,13 @@ class UserController(private val userService: UserService) :
     @PostMapping("/self/password")
     fun selfPasswordChange(@RequestParam password: String, auth: Authentication) {
         log.debug("POST {}/self/password {}", PATH, auth.name)
-        userService.selfPasswordChange(auth, password)
+        userService.selfPasswordChange(auth.name, password)
     }
 
     @PostMapping("/{id}/password")
-    fun forcePasswordChange(@PathVariable id: Long, @RequestParam password: String, auth: Authentication) {
-        log.debug("POST {}/{}/password {}", PATH, id, auth.name)
-        userService.forcePasswordChange(id, auth, password)
+    fun forcePasswordChange(@PathVariable id: Long, @RequestParam password: String) {
+        log.debug("POST {}/{}/password", PATH, id)
+        userService.forcePasswordChange(id, password)
     }
 
     companion object {
