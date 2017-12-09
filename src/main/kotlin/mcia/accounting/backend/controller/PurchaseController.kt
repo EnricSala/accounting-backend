@@ -21,7 +21,11 @@ import javax.servlet.http.HttpServletResponse
 class PurchaseController(service: PurchaseService, private val invoiceService: InvoiceService) :
         BaseController<Purchase, PurchaseRequest>(PATH, service) {
 
-    override fun findBy(query: String, page: Int, size: Int): PageResult<Purchase> {
+    @GetMapping
+    fun search(@RequestParam(value = "q", defaultValue = "") query: String,
+               @RequestParam(value = "page", defaultValue = "0") page: Int,
+               @RequestParam(value = "size", defaultValue = "10") size: Int): PageResult<Purchase> {
+        log.debug("GET {} q={} page={} size={}", PATH, query, page, size)
         val sort = Sort.by(Order.desc("requestDate"))
         val pageable = PageRequest.of(page, size, sort)
         val specification = SearchSpecification.from<Purchase>(query)

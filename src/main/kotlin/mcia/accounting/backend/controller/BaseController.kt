@@ -1,6 +1,5 @@
 package mcia.accounting.backend.controller
 
-import mcia.accounting.backend.controller.dto.PageResult
 import mcia.accounting.backend.service.BaseService
 import mcia.accounting.backend.utils.loggerOf
 import org.slf4j.Logger
@@ -11,17 +10,6 @@ abstract class BaseController<T, in R>(protected val path: String,
                                        protected val service: BaseService<T, R>) {
 
     protected val log: Logger by lazy { loggerOf(this::class) }
-
-    @GetMapping
-    fun search(@RequestParam(value = "q", defaultValue = "") query: String,
-               @RequestParam(value = "page", defaultValue = "0") page: Int,
-               @RequestParam(value = "size", defaultValue = "10") size: Int): PageResult<T> {
-        log.debug("GET {} q={} page={} size={}", path, query, page, size)
-        return findBy(query, page, size)
-    }
-
-    fun findBy(query: String, page: Int, size: Int): PageResult<T> =
-            PageResult.just(service.findAll().toList())
 
     @GetMapping("/{id}")
     fun findById(@PathVariable id: Long): T {
