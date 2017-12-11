@@ -6,6 +6,7 @@ import mcia.accounting.backend.service.exception.InvalidRequestException
 import mcia.accounting.backend.service.exception.ResourceNotFoundException
 import mcia.accounting.backend.service.exception.UnauthorizedException
 import mcia.accounting.backend.utils.loggerOf
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -39,6 +40,13 @@ class ControllerExceptionHandler {
     @ExceptionHandler(FileNotFoundException::class)
     fun handleFileNotFoundException(exception: FileNotFoundException) {
         log.warn("File not found: {}", exception.message)
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(DataIntegrityViolationException::class)
+    fun handleDataAccessException(exception: DataIntegrityViolationException): ErrorMessage {
+        log.warn("Integrity violation: {}", exception.message)
+        return ErrorMessage.conflict(exception.message ?: DEFAULT_REASON)
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
