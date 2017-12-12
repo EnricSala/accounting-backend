@@ -12,12 +12,6 @@ import org.springframework.web.bind.annotation.*
 class UserController(private val userService: UserService) :
         BaseController<AppUser, UserRequest>(UserController.PATH, userService) {
 
-    @GetMapping
-    fun findAll(): Iterable<AppUser> {
-        log.debug("GET {}", PATH)
-        return service.findAll()
-    }
-
     @GetMapping("/self")
     fun self(auth: Authentication): AppUser {
         log.debug("GET {}/self {}", PATH, auth.name)

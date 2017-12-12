@@ -7,8 +7,9 @@ import mcia.accounting.backend.repository.search.SearchSpecification
 import mcia.accounting.backend.service.InvoiceService
 import mcia.accounting.backend.service.PurchaseService
 import mcia.accounting.backend.service.request.PurchaseRequest
+import mcia.accounting.backend.utils.withDefaultSort
 import org.springframework.core.io.Resource
-import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.domain.Sort.Order
 import org.springframework.http.MediaType
@@ -21,15 +22,12 @@ import javax.servlet.http.HttpServletResponse
 class PurchaseController(service: PurchaseService, private val invoiceService: InvoiceService) :
         BaseController<Purchase, PurchaseRequest>(PATH, service) {
 
-    @GetMapping
-    fun search(@RequestParam(value = "q", defaultValue = "") query: String,
-               @RequestParam(value = "page", defaultValue = "0") page: Int,
-               @RequestParam(value = "size", defaultValue = "10") size: Int): PageResult<Purchase> {
-        log.debug("GET {} q={} page={} size={}", PATH, query, page, size)
-        val sort = Sort.by(Order.desc("requestDate"))
-        val pageable = PageRequest.of(page, size, sort)
+    override fun findBy(query: String, pageable: Pageable): Iterable<Purchase> {
+        val pageBy = pageable.withDefaultSort(DEFAULT_SORT)
+        log.debug("GET {} q={} page={} size={} sort={}",
+                PATH, query, pageBy.pageNumber, pageBy.pageSize, pageBy.sort)
         val specification = SearchSpecification.from<Purchase>(query)
-        return PageResult.of(service.search(specification, pageable))
+        return PageResult.of(service.search(specification, pageBy))
     }
 
     @GetMapping("/{id}/invoice", produces = [INVOICE_MIME])
@@ -55,6 +53,7 @@ class PurchaseController(service: PurchaseService, private val invoiceService: I
 
     companion object {
         const val PATH = WebConfig.BASE_API_PATH + "/" + Purchase.RESOURCE
+        private val DEFAULT_SORT = Sort.by(Order.desc("requestDate"))
         private const val INVOICE_MIME = MediaType.APPLICATION_PDF_VALUE
         private const val DISPOSITION_HEADER = "Content-Disposition"
         private const val DISPOSITION_VALUE = "inline; filename="
