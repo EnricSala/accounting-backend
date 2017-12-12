@@ -7,6 +7,7 @@ import mcia.accounting.backend.service.exception.ResourceNotFoundException
 import mcia.accounting.backend.service.exception.UnauthorizedException
 import mcia.accounting.backend.utils.loggerOf
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.data.mapping.PropertyReferenceException
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -16,8 +17,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 class ControllerExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(InvalidRequestException::class)
-    fun handleInvalidRequestException(exception: InvalidRequestException): ErrorMessage {
+    @ExceptionHandler(InvalidRequestException::class, PropertyReferenceException::class)
+    fun handleInvalidRequestException(exception: RuntimeException): ErrorMessage {
         log.warn("Bad request: {}", exception.message)
         return ErrorMessage.badRequest(exception.message ?: DEFAULT_REASON)
     }
