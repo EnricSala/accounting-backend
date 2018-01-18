@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.web.AuthenticationEntryPoint
+import javax.servlet.http.HttpServletResponse
 
 @Configuration
 class SecurityConfig(private val userRepository: UserRepository) : WebSecurityConfigurerAdapter() {
@@ -40,6 +42,13 @@ class SecurityConfig(private val userRepository: UserRepository) : WebSecurityCo
                 .csrf()
                     .disable()
                 .httpBasic()
+                    .authenticationEntryPoint(authEntryPoint)
+    }
+
+    private val authEntryPoint = AuthenticationEntryPoint { _, response, exception ->
+        // Not sending the WWW-Authenticate header to prevent the
+        // browser from showing the basic authentication popup
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, exception.message)
     }
 
 }
