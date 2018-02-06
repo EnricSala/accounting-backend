@@ -5,6 +5,8 @@ import java.util.*
 
 data class PurchaseRequest(val item: String,
                            val code: String,
+                           val codeRP: String,
+                           val codeLV: String,
                            val amount: BigDecimal,
                            val comments: String,
                            val requestDate: Date,

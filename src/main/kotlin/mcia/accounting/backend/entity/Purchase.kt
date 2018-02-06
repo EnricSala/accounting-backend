@@ -14,6 +14,10 @@ data class Purchase(
 
         @Column(unique = true) var code: String,
 
+        @Column var codeRP: String,
+
+        @Column var codeLV: String,
+
         @Column var amount: BigDecimal,
 
         @Column var comments: String,
