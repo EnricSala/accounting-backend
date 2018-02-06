@@ -10,6 +10,7 @@ class PurchaseStateConverter : RequestConverter<PurchaseState, PurchaseStateRequ
     override fun toEntity(request: PurchaseStateRequest, id: Long): PurchaseState =
             PurchaseState(
                     id = id,
-                    name = request.name)
+                    name = request.name,
+                    color = request.color)
 
 }
