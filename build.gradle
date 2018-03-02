@@ -48,7 +48,7 @@ dependencies {
     compile('com.fasterxml.jackson.module:jackson-module-kotlin')
 
     runtime('com.h2database:h2')
-    // runtime('mysql:mysql-connector-java')
+    runtime('mysql:mysql-connector-java')
 
     compileOnly('org.springframework.boot:spring-boot-configuration-processor')
     testCompile('org.springframework.boot:spring-boot-starter-test')
