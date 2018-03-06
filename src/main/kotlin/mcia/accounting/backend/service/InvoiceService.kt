@@ -7,6 +7,7 @@ import mcia.accounting.backend.service.exception.FileNotFoundException
 import mcia.accounting.backend.service.exception.ResourceNotFoundException
 import mcia.accounting.backend.utils.loggerOf
 import org.springframework.core.io.FileSystemResource
+import org.springframework.core.io.Resource
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -21,7 +22,7 @@ class InvoiceService(private val settings: AppSettings,
                      private val purchaseRepository: PurchaseRepository) {
 
     @Transactional(readOnly = true)
-    fun findInvoiceOf(purchaseId: Long): FileSystemResource {
+    fun findInvoiceOf(purchaseId: Long): Pair<Resource, String> {
         val purchase = purchaseRepository.findById(purchaseId)
                 .orElseThrow { FileNotFoundException("purchase id not found") }
         val invoicePath = purchase.invoicePath
@@ -30,7 +31,7 @@ class InvoiceService(private val settings: AppSettings,
         val invoiceFile = File(baseDir, invoicePath)
         if (!invoiceFile.isFile)
             throw FileNotFoundException("cannot find invoice: $invoicePath")
-        return FileSystemResource(invoiceFile)
+        return FileSystemResource(invoiceFile) to filenameOf(purchase)
     }
 
     @Transactional
@@ -91,6 +92,13 @@ class InvoiceService(private val settings: AppSettings,
                 .also { log.info("Updated {}", it) }
     }
 
+    private fun filenameOf(purchase: Purchase): String {
+        val name = purchase.code
+                .replace(DISALLOWED_NAME_CHARS, "_")
+                .trim('_', '-', '.')
+        return "invoice_$name.$EXTENSION"
+    }
+
     companion object {
         private val log = loggerOf(InvoiceService::class)
         private const val EXTENSION = "pdf"
@@ -98,6 +106,7 @@ class InvoiceService(private val settings: AppSettings,
         private const val FILE_DATE_FORMAT = "yyyy-MM-dd_HH-mm-ss"
         private val DIR_FORMATTER = SimpleDateFormat(DIR_DATE_FORMAT, Locale.ENGLISH)
         private val FILE_FORMATTER = SimpleDateFormat(FILE_DATE_FORMAT, Locale.ENGLISH)
+        private val DISALLOWED_NAME_CHARS = Regex("[^\\w]+")
     }
 
 }

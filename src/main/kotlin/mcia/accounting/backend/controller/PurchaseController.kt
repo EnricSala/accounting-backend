@@ -33,10 +33,10 @@ class PurchaseController(service: PurchaseService, private val invoiceService: I
     @GetMapping("/{id}/invoice", produces = [INVOICE_MIME])
     fun findInvoice(@PathVariable id: Long, response: HttpServletResponse): Resource {
         log.debug("GET {}/{}/invoice", PATH, id)
-        return invoiceService.findInvoiceOf(id).also {
-            log.debug("Downloading invoice: ${it.filename}")
-            response.setHeader(DISPOSITION_HEADER, DISPOSITION_VALUE + it.filename)
-        }
+        val (resource, filename) = invoiceService.findInvoiceOf(id)
+        log.debug("Downloading invoice: ${resource.filename} as $filename")
+        response.setHeader(DISPOSITION_HEADER, DISPOSITION_VALUE + filename)
+        return resource
     }
 
     @PutMapping("/{id}/invoice")
