@@ -14,6 +14,12 @@ data class Purchase(
 
         @Column(unique = true) var code: String,
 
+        @Column var engagement: String,
+
+        @Column var billing: String,
+
+        @Column var codeERP: String,
+
         @Column var codeRP: String,
 
         @Column var codeLV: String,
