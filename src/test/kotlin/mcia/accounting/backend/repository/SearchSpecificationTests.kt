@@ -5,6 +5,7 @@ import mcia.accounting.backend.entity.Employee
 import mcia.accounting.backend.entity.Project
 import mcia.accounting.backend.entity.Purchase
 import mcia.accounting.backend.repository.search.SearchSpecification
+import mcia.accounting.backend.service.exception.InvalidRequestException
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.math.BigDecimal
@@ -35,7 +36,7 @@ class SearchSpecificationTests {
         String::class.matches<Purchase>("chargingProject.client.type.name")
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test(expected = InvalidRequestException::class)
     fun fails_on_unkown_property() {
         String::class.matches<Purchase>("potato")
     }

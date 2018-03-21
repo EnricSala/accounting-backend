@@ -70,9 +70,9 @@ class DynamicQueryTests {
                 Supplier(name = "RS"))).toList()
 
         val purchaseStates = purchaseStateRepository.saveAll(listOf(
-                PurchaseState(name = "Pending"),
-                PurchaseState(name = "Done"),
-                PurchaseState(name = "Cancelled"))).toList()
+                PurchaseState(name = "Pending", color = "#fdd835"),
+                PurchaseState(name = "Done", color = "#d84315"),
+                PurchaseState(name = "Cancelled", color = "#9c27b0"))).toList()
 
         val purchaseTypes = purchaseTypeRepository.saveAll(listOf(
                 PurchaseType(name = "Equipment"),
@@ -85,19 +85,22 @@ class DynamicQueryTests {
                         requestDate = "2017-05-23".date(), requestingEmployee = employees[0],
                         supplier = suppliers[0], code = "SGS3-1234",
                         state = purchaseStates[0], type = purchaseTypes[1],
-                        invoicePath = null, comments = ""),
+                        invoicePath = null, comments = "", codeLV = "", codeRP = "",
+                        codeERP = "", engagement = "", billing = ""),
                 Purchase(item = "Motorola G2 Plus", amount = BigDecimal("200.50"),
                         requestingProject = projects[0], chargingProject = projects[1],
                         requestDate = "2017-08-15".date(), requestingEmployee = employees[0],
                         supplier = suppliers[1], code = "MGSP-2345",
                         state = purchaseStates[1], type = purchaseTypes[2],
-                        invoicePath = null, comments = ""),
+                        invoicePath = null, comments = "", codeLV = "", codeRP = "",
+                        codeERP = "", engagement = "", billing = ""),
                 Purchase(item = "HP Z420 Server", amount = BigDecimal("300.75"),
                         requestingProject = projects[1], chargingProject = projects[2],
                         requestDate = "2017-11-04".date(), requestingEmployee = employees[1],
                         supplier = suppliers[2], code = "HPZS-3456",
                         state = purchaseStates[2], type = purchaseTypes[0],
-                        invoicePath = null, comments = "")))
+                        invoicePath = null, comments = "", codeLV = "", codeRP = "",
+                        codeERP = "", engagement = "", billing = "")))
     }
 
     @After
